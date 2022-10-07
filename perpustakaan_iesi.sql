@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 06, 2022 at 09:44 AM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 8.0.7
+-- Generation Time: Oct 07, 2022 at 06:52 AM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 8.1.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -31,6 +31,23 @@ CREATE TABLE `buku` (
   `id` int(11) NOT NULL,
   `judul` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `buku`
+--
+
+INSERT INTO `buku` (`id`, `judul`) VALUES
+(1, 'Sherlock Holmes'),
+(2, 'Topeng Kaca'),
+(3, 'Doraemon'),
+(4, 'Petualangan Doraemon'),
+(5, 'Thomas and Friends'),
+(6, 'The Return of Sherlock Holmes'),
+(7, 'The Adventure of Sherlock Holmes'),
+(8, 'Petualangan Thomas'),
+(9, 'Topeng Panji'),
+(10, 'Doraemon vol. 11'),
+(11, 'Topeng Jakarta');
 
 -- --------------------------------------------------------
 
@@ -86,7 +103,7 @@ ALTER TABLE `peminjaman`
 -- AUTO_INCREMENT for table `buku`
 --
 ALTER TABLE `buku`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `peminjaman`
