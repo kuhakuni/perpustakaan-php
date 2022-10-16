@@ -1,71 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+include '../cari.php';
+function read($keyword = null)
+{
+    if ($keyword) {
+        $link = mysqli_connect(
+            '127.0.0.1',
+            'root',
+            'admin',
+            'perpustakaan_iesi'
+        );
+        $query = "SELECT id, judul FROM buku WHERE judul LIKE '%$keyword%'";
+        $result = mysqli_query($link, $query);
+        $listbuku = [];
+        while ($row = mysqli_fetch_array($result)) {
+            $listbuku[] = $row;
+        }
+        mysqli_close($link);
+        $row = '';
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Peminjaman Buku</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css" />
-
-    <style>
-    table,
-    th,
-    td {
-        border: 1px solid #000;
+        if ($listbuku) {
+            foreach ($listbuku as $id => $val) {
+                $row .= '<tr>';
+                $row .= '<td>' . ($id + 1) . '</td>';
+                $row .= '<td>' . $val['judul'] . '</td>';
+                $row .=
+                    "<td><a href='../pinjam/pinjam.php?fitur=add&idbuku=" .
+                    $val['id'] .
+                    "'><button>Tambah</button></a></td>";
+                $row .= '</tr>';
+            }
+        } else {
+            $row = "<tr><td colspan='2'>Tidak Ditemukan Buku</td></tr>";
+        }
+        echo "<table border='1' style='border-collapse:collapse'>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Judul Buku</th>
+            <th>Aksi</th>
+        <tr>
+    </thead>
+    <tbody>
+        $row
+    </tbody>
+</table>";
     }
-    </style>
-</head>
-
-<body class="d-flex justify-content-center align-items-center flex-column" style="min-height: 100vh;">
-
-    <?php
-    include "conn.php";
-
-    $listPeminjaman = [];
-    function read()
-    {
-    	global $conn, $listPeminjaman;
-    	$query = "SELECT * FROM peminjaman";
-    	$result = mysqli_query($conn, $query);
-    	while ($row = mysqli_fetch_array($result)) {
-    		$listPeminjaman[] = $row;
-    	}
-    	mysqli_close($conn);
+    $link = mysqli_connect('127.0.0.1', 'root', 'admin', 'perpustakaan_iesi');
+    $query =
+        'SELECT * FROM peminjaman p JOIN dipinjam d ON p.id = d.peminjaman_id JOIN buku b ON d.buku_id = b.id';
+    $result = mysqli_query($link, $query);
+    $listpinjam = [];
+    while ($row = mysqli_fetch_array($result)) {
+        $listpinjam[] = $row;
     }
-    ?>
-    <h1>Daftar Peminjaman Buku</h1>
-    <?php if (!$listPeminjaman): ?>
-    <p>Tidak ada buku yang dipinjam</p>
-    <?php else: ?>
-    <table>
+    mysqli_close($link);
+
+    $row = '';
+
+    if ($listpinjam) {
+        foreach ($listpinjam as $id => $val) {
+            $row .= '<tr>';
+            $row .= '<td>' . ($id + 1) . '</td>';
+            $row .= '<td>' . $val['judul'] . '</td>';
+            $row .= '<td>' . $val['hari'] . '</td>';
+            $row .= '<td>' . $val['tanggal'] . '</td>';
+            $row .=
+                "<td><a href='pinjam.php?fitur=delete&idbuku=" .
+                $val['peminjaman_id'] .
+                "'><button>Hapus</button></a></td>";
+            $row .= '</tr>';
+        }
+    } else {
+        $row = "<tr><td colspan='5'>Tidak Ditemukan Peminjaman</td></tr>";
+    }
+
+    $html = "
+    <br>
+    <table border='1' style='border-collapse:collapse'>
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Judul</th>
-            </tr>
+                <th>No</th>
+                <th>Judul Buku</th>
+                <th>Hari</th>
+                <th>Tanggal</th>
+                <th>Aksi</th>
+            <tr>
         </thead>
         <tbody>
-            <?php foreach ($listPeminjaman as $key): ?>
-            <tr>
-                <td>
-                    <?php $key["id"]; ?>
-                </td>
-                <td>
-                    <?php $key["judul"]; ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
+            $row
         </tbody>
-    </table>
-    <?php endif; ?>
-    <a href="../" class="text-decoration-none"><i class="bi bi-arrow-left"></i> Kembali</a>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
-    </script>
+    </table>";
 
-</body>
+    echo $html;
 
-</html>
+    echo "<br><form action='pinjam.php' method='get'>
+    <input type='text' name='hari' placeholder='masukkan durasi pinjam'>
+    <br><br>
+    <button type='submit' name='fitur' value='save'>Pinjam Buku</button>
+</form>";
+}

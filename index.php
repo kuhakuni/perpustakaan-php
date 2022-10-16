@@ -15,7 +15,7 @@
 </head>
 
 <body class="d-flex justify-content-center align-items-center flex-column" style="min-height: 100vh;">
-    <h1 class="my-4">Perpustakaan</h1>
+    <h1 class="my-4">Sistem Informasi Perpustakaan</h1>
     <div>
         <a href="fitur.php?fitur=pinjam" class="btn btn-primary">Pinjam Buku</a>
         <a href="fitur.php" class="btn btn-secondary">Cari Buku</a>
